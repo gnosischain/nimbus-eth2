@@ -281,9 +281,10 @@ local-testnet-mainnet:
 		--num-threads:1
 
 # test binaries that can output an XML report
+# This is the Gnosis fork: run the consensus-spec tests for the gnosis preset (recycling the
+# existing `make test` job) instead of the upstream mainnet/minimal presets.
 XML_TEST_BINARIES_CORE := \
-	consensus_spec_tests_minimal \
-	consensus_spec_tests_mainnet
+	consensus_spec_tests_gnosis
 
 XML_TEST_BINARIES := \
 	$(XML_TEST_BINARIES_CORE) \
@@ -296,7 +297,7 @@ TEST_BINARIES := \
 	proto_array \
 	test_libnimbus_lc \
 	process_state
-.PHONY: $(TEST_BINARIES) $(XML_TEST_BINARIES) consensus_spec_tests_gnosis test-gnosis force_build_alone_all_tests
+.PHONY: $(TEST_BINARIES) $(XML_TEST_BINARIES) force_build_alone_all_tests
 
 # Preset-dependent tests
 consensus_spec_tests_mainnet: | build deps
@@ -435,18 +436,6 @@ endif
 		fi; \
 		done; \
 		rm -rf 0000-*.json t_slashprot_migration.* *.log block_sim_db
-
-# Gnosis-preset consensus spec tests, run as a dedicated job (kept out of the default `make test`
-# so the core suite does not depend on the Gnosis vectors being published).
-test-gnosis: | consensus_spec_tests_gnosis
-ifeq ($(DISABLE_TEST_FIXTURES_SCRIPT), 0)
-	V=$(V) scripts/setup_scenarios.sh
-endif
-	build/consensus_spec_tests_gnosis --xml:build/consensus_spec_tests_gnosis.xml --console || { \
-		echo -e "\nconsensus_spec_tests_gnosis failed; Last 5000 lines from the log:"; \
-		tail -n5000 "consensus_spec_tests_gnosis.log"; exit 1; \
-	}
-	rm -rf 0000-*.json *.log
 
 # It's OK to only build this once. `make update` deletes the binary, forcing a rebuild.
 build/generate_makefile: tools/generate_makefile.nim | deps-common
