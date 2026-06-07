@@ -281,9 +281,10 @@ local-testnet-mainnet:
 		--num-threads:1
 
 # test binaries that can output an XML report
+# This is the Gnosis fork: run the consensus-spec tests for the gnosis preset (recycling the
+# existing `make test` job) instead of the upstream mainnet/minimal presets.
 XML_TEST_BINARIES_CORE := \
-	consensus_spec_tests_minimal \
-	consensus_spec_tests_mainnet
+	consensus_spec_tests_gnosis
 
 XML_TEST_BINARIES := \
 	$(XML_TEST_BINARIES_CORE) \
@@ -313,6 +314,16 @@ consensus_spec_tests_minimal: | build deps
 			$@ \
 			"tests/consensus_spec/consensus_spec_tests_preset.nim" \
 			$(NIM_PARAMS) -d:const_preset=minimal $(TEST_MODULES_FLAGS) && \
+		echo -e $(BUILD_END_MSG) "build/$@"
+
+# Gnosis uses the mainnet-style preset values (only SLOTS_PER_EPOCH etc. differ), so no blob
+# override is needed. Vectors come from gnosischain/consensus-specs (see scripts/setup_scenarios.sh).
+consensus_spec_tests_gnosis: | build deps
+	+ echo -e $(BUILD_MSG) "build/$@" && \
+		MAKE="$(MAKE)" V="$(V)" $(ENV_SCRIPT) scripts/compile_nim_program.sh \
+			$@ \
+			"tests/consensus_spec/consensus_spec_tests_preset.nim" \
+			$(NIM_PARAMS) -d:const_preset=gnosis $(TEST_MODULES_FLAGS) && \
 		echo -e $(BUILD_END_MSG) "build/$@"
 
 # Tests we only run for the default preset

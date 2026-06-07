@@ -39,3 +39,21 @@ pushd "${SUBREPO_DIR}"
 ./download_test_vectors.sh
 ./download_slashing_interchange_tests.sh
 popd
+
+# Gnosis-preset reference tests, published by gnosischain/consensus-specs.
+# The submodule above lays vectors out as tests-v<SPEC_VERSION>/<preset>/<fork>/...; drop the
+# Gnosis suite alongside as tests-v<SPEC_VERSION>/gnosis/ so the harness (built with
+# -d:const_preset=gnosis) finds it. The preset-independent "general" tests already come from the
+# submodule, so only the Gnosis preset tarball is needed here.
+GNOSIS_SPECS_TEST_VERSION="${GNOSIS_SPECS_TEST_VERSION:-v1.7.0-alpha.10}"
+GNOSIS_TESTS_DIR=$(echo "${SUBREPO_DIR}"/tests-v*)
+if [[ -d "${GNOSIS_TESTS_DIR}" && ! -d "${GNOSIS_TESTS_DIR}/gnosis" ]]; then
+	echo -e "Downloading Gnosis-preset test vectors (${GNOSIS_SPECS_TEST_VERSION})"
+	GNOSIS_TMP="$(mktemp -d)"
+	curl --location --silent --show-error --retry 3 --retry-all-errors --fail \
+		-o "${GNOSIS_TMP}/gnosis.tar.gz" \
+		"https://github.com/gnosischain/consensus-specs/releases/download/${GNOSIS_SPECS_TEST_VERSION}/gnosis.tar.gz"
+	# tarball contains tests/gnosis/...; strip the leading tests/ component
+	tar -xzf "${GNOSIS_TMP}/gnosis.tar.gz" -C "${GNOSIS_TESTS_DIR}" --strip-components=1
+	rm -rf "${GNOSIS_TMP}"
+fi
