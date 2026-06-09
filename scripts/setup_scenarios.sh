@@ -45,7 +45,7 @@ popd
 # Gnosis suite alongside as tests-v<SPEC_VERSION>/gnosis/ so the harness (built with
 # -d:const_preset=gnosis) finds it. The preset-independent "general" tests already come from the
 # submodule, so only the Gnosis preset tarball is needed here.
-GNOSIS_SPECS_TEST_VERSION="${GNOSIS_SPECS_TEST_VERSION:-v1.7.0-alpha.8}"
+GNOSIS_SPECS_TEST_VERSION="${GNOSIS_SPECS_TEST_VERSION:-v1.7.0-alpha.10}"
 GNOSIS_TESTS_DIR=$(echo "${SUBREPO_DIR}"/tests-v*)
 if [[ -d "${GNOSIS_TESTS_DIR}" && ! -d "${GNOSIS_TESTS_DIR}/gnosis" ]]; then
 	echo -e "Downloading Gnosis-preset test vectors (${GNOSIS_SPECS_TEST_VERSION})"

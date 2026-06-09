@@ -563,8 +563,8 @@ elif const_preset == "gnosis":
     MIN_PER_EPOCH_CHURN_LIMIT: 4,
     # 2**16 (= 65,536)
     CHURN_LIMIT_QUOTIENT: 4096,
-    # [New in Deneb:EIP7514] 2**3 (= 8)
-    MAX_PER_EPOCH_ACTIVATION_CHURN_LIMIT: 8,
+    # [New in Deneb:EIP7514] Gnosis: 2 (matches gnosis runtime config)
+    MAX_PER_EPOCH_ACTIVATION_CHURN_LIMIT: 2,
 
     # Fork choice
     # ---------------------------------------------------------------
@@ -616,8 +616,8 @@ elif const_preset == "gnosis":
     # Electra
     # 2**7 * 10**9 (= 128,000,000,000)
     MIN_PER_EPOCH_CHURN_LIMIT_ELECTRA: 128000000000'u64,
-    # 2**8 * 10**9 (= 256,000,000,000)
-    MAX_PER_EPOCH_ACTIVATION_EXIT_CHURN_LIMIT: 256000000000'u64,
+    # 2**6 * 10**9 (= 64,000,000,000) Gnosis (matches gnosis runtime config)
+    MAX_PER_EPOCH_ACTIVATION_EXIT_CHURN_LIMIT: 64000000000'u64,
     # `2`
     BLOB_SIDECAR_SUBNET_COUNT_ELECTRA: 2,
     # `uint64(2)`
